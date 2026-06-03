@@ -12,6 +12,8 @@ class FakeStoryAdapter(AIStoryPort):
             mood="mysterious",
             main_objects=["gate", "mist", "forest"],
             story_seed="A forgotten gate awakens when touched by moonlight.",
+            magical_elements=["whispering echoes", "shifting paths"],
+            possible_conflict="The gate's awakening disrupts the balance of the world.",
         )
 
     def generate_first_chapter(self, story: Story) -> Chapter:

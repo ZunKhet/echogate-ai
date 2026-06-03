@@ -48,11 +48,12 @@ class PDFExportAdapter(DocumentExportPort):
         )
 
         if include_cover_image and cover_image_bytes:
-            self._add_cover_image(
+            image_bottom_y = self._add_cover_image(
                 pdf=pdf,
                 cover_image_bytes=cover_image_bytes,
+                y_position=90,
             )
-            pdf.ln(100)
+            pdf.set_y(image_bottom_y + 10)
         else:
             pdf.ln(20)
 
@@ -88,7 +89,8 @@ class PDFExportAdapter(DocumentExportPort):
         self,
         pdf: FPDF,
         cover_image_bytes: bytes,
-    ) -> None:
+        y_position: float,
+    ) -> float:
         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_file:
             temp_file.write(cover_image_bytes)
             temp_image_path = Path(temp_file.name)
@@ -101,8 +103,11 @@ class PDFExportAdapter(DocumentExportPort):
             pdf.image(
                 str(temp_image_path),
                 x=x_position,
-                y=60,
+                y=y_position,
                 w=image_width,
             )
+
+            return y_position + 90
+
         finally:
             temp_image_path.unlink(missing_ok=True)

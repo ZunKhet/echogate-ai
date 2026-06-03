@@ -52,9 +52,9 @@ The application uses the first available title.
 
 ## 2. Chapter Generation Contract
 
-Used for Chapter 1 and Chapters 2–5.
+Used for Chapter 1 and Chapters 2–3.
 
-### Expected JSON for Chapters 1–4
+### Expected JSON for Chapters 1–2
 
 ```json
 {
@@ -78,7 +78,7 @@ Used for Chapter 1 and Chapters 2–5.
 }
 ```
 
-### Expected JSON for Chapter 5
+### Expected JSON for Chapter 3
 
 ```json
 {
@@ -94,8 +94,8 @@ Used for Chapter 1 and Chapters 2–5.
 - `title` should be short and memorable.
 - `summary` should be one sentence.
 - `content` should be around 350–500 words.
-- Chapters 1–4 must contain exactly 3 choices.
-- Chapter 5 must contain an empty `choices` list.
+- Chapters 1 and 2 must contain exactly 3 choices.
+- Chapter 3 must contain an empty `choices` list.
 - Choice IDs must be strings: `"1"`, `"2"`, `"3"`.
 - Choices should create meaningful story branches, not simple yes/no actions.
 - The story must stay consistent with previous chapters.
@@ -104,7 +104,7 @@ Used for Chapter 1 and Chapters 2–5.
 
 ## 3. Story Finalization Contract
 
-Used after Chapter 5 is complete.
+Used after Chapter 3 is complete.
 
 ### Expected JSON
 

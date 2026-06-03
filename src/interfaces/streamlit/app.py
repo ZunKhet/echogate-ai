@@ -8,17 +8,28 @@ from src.interfaces.streamlit.factories import (
 
 from src.config.settings import settings
 
+from src.config.app_config import (
+    APP_ICON,
+    APP_NAME,
+    APP_TAGLINE,
+    GENRE_OPTIONS,
+    MAX_CHAPTERS,
+    PDF_FILE_NAME,
+    PROTAGONIST_ROLE_OPTIONS,
+    TONE_OPTIONS,
+)
+
 
 st.set_page_config(
-    page_title="EchoGate",
-    page_icon="🌌",
+    page_title=APP_NAME,
+    page_icon=APP_ICON,
     layout="wide",
 )
 
 initialize_session_state()
 
-st.title("🌌 EchoGate")
-st.caption("Every image echoes a story.")
+st.title(f"{APP_ICON} {APP_NAME}")
+st.caption(APP_TAGLINE)
 
 
 with st.sidebar:
@@ -53,40 +64,19 @@ with st.sidebar:
 
     genre = st.selectbox(
         "Genre",
-        options=[
-            "Fantasy",
-            "Mystery",
-            "Sci-fi",
-            "Adventure",
-            "Dark Fairytale",
-            "Cozy Magical",
-        ],
+        options=GENRE_OPTIONS,
         index=0,
     )
 
     tone = st.selectbox(
         "Tone",
-        options=[
-            "Mysterious",
-            "Epic",
-            "Dreamy",
-            "Dark",
-            "Hopeful",
-            "Emotional",
-        ],
+        options=TONE_OPTIONS,
         index=0,
     )
 
     protagonist_role = st.selectbox(
         "Protagonist Role",
-        options=[
-            "Explorer",
-            "Wanderer",
-            "Mage",
-            "Guardian",
-            "Dreamer",
-            "Lost Traveler",
-        ],
+        options=PROTAGONIST_ROLE_OPTIONS,
         index=0,
     )
 
@@ -99,7 +89,8 @@ with st.sidebar:
         st.caption("No story started yet.")
     else:
         st.caption(f"Title: {story.title}")
-        st.caption(f"Progress: {len(story.chapters)} / 5 chapters")
+        st.caption(
+            f"Progress: {len(story.chapters)} / {MAX_CHAPTERS} chapters")
 
         if story.is_complete:
             st.success("Story complete")
@@ -124,7 +115,7 @@ with st.sidebar:
 
     st.divider()
     st.markdown("**Story Format**")
-    st.caption("Interactive 5-chapter adventure")
+    st.caption(f"Interactive {MAX_CHAPTERS}-chapter adventure")
 
 
 story_service = get_story_service()
@@ -217,9 +208,9 @@ else:
 
     st.markdown(f"# {story.title}")
 
-    progress = len(story.chapters) / 5
+    progress = len(story.chapters) / MAX_CHAPTERS
     st.progress(progress)
-    st.caption(f"Chapter {len(story.chapters)} of 5")
+    st.caption(f"Chapter {len(story.chapters)} of {MAX_CHAPTERS}")
 
     st.markdown("## 📚 Story So Far")
 
@@ -306,7 +297,7 @@ else:
             st.download_button(
                 label="Download Story PDF",
                 data=st.session_state.story_file,
-                file_name="echogate_story.pdf",
+                file_name=PDF_FILE_NAME,
                 mime="application/octet-stream",
                 use_container_width=True,
             )
@@ -324,7 +315,7 @@ if st.session_state.story:
 else:
     st.caption("Format: 5-chapter adventure")
 
-if settings.DEBUG_MODE:
+if settings.DEBUG_MODE and story is not None:
     st.divider()
 
     with st.expander("Developer Debug"):

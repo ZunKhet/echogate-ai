@@ -1,5 +1,6 @@
 import mimetypes
 import tempfile
+import time
 from pathlib import Path
 
 from google import genai
@@ -117,15 +118,30 @@ Completed story:
         )
 
     def _generate_text(self, prompt: str) -> str:
-        response = self.client.models.generate_content(
-            model=self.model,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_mime_type="application/json",
-            ),
-        )
+        max_retries = 3
 
-        return response.text or ""
+        for attempt in range(max_retries):
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        response_mime_type="application/json",
+                    ),
+                )
+
+                if not response.text:
+                    raise ValueError(
+                        f"Gemini returned empty response. Full response: {response}")
+
+                return response.text
+
+            except Exception as error:
+                if "503" in str(error) and attempt < max_retries - 1:
+                    time.sleep(2)
+                    continue
+
+                raise error
 
     def _generate_with_image(
         self,

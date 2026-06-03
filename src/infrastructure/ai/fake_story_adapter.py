@@ -3,6 +3,7 @@ from src.domain.entities.chapter import Chapter
 from src.domain.entities.choice import Choice
 from src.domain.entities.image_analysis import ImageAnalysis
 from src.domain.entities.story import Story
+from src.config.app_config import MAX_CHAPTERS
 
 
 class FakeStoryAdapter(AIStoryPort):
@@ -52,7 +53,7 @@ class FakeStoryAdapter(AIStoryPort):
                 Choice(id="2", text="Search for the lost map"),
                 Choice(id="3", text="Enter the silver tower"),
             ]
-            if chapter_number < 5
+            if chapter_number < MAX_CHAPTERS
             else [],
         )
 

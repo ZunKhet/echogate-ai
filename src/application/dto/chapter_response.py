@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ChoiceResponse(BaseModel):
@@ -10,4 +10,4 @@ class ChapterResponse(BaseModel):
     title: str
     summary: str
     content: str
-    choices: list[ChoiceResponse]
+    choices: list[ChoiceResponse] = Field(default_factory=list)

@@ -40,3 +40,11 @@ class Story:
 
     def should_finalize(self) -> bool:
         return not self.is_complete and len(self.chapters) == MAX_CHAPTERS
+
+    def rename(self, new_title: str) -> None:
+        clean_title = new_title.strip()
+
+        if not clean_title:
+            raise ValueError("Story title cannot be empty.")
+
+        self.title = clean_title

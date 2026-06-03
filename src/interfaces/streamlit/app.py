@@ -1,9 +1,10 @@
+import streamlit as st
+
 from src.interfaces.streamlit.factories import (
     get_export_story_use_case,
     get_story_service,
     initialize_session_state,
 )
-import streamlit as st
 
 
 st.set_page_config(
@@ -21,10 +22,32 @@ st.caption("Every image echoes a story.")
 with st.sidebar:
     st.header("Story Settings")
 
-    story_title = st.text_input(
-        "Story Title (Optional)",
-        placeholder="Leave empty to let AI decide later",
-    )
+    story = st.session_state.story
+    story_title = ""
+
+    if story is None:
+        story_title = st.text_input(
+            "Story Title (Optional)",
+            placeholder="Leave empty to let AI decide later",
+        )
+    else:
+        edited_title = st.text_input(
+            "Story Title",
+            value=story.title,
+            key="editable_story_title",
+        )
+
+        if edited_title != story.title:
+            if st.button("Update Title", use_container_width=True):
+                try:
+                    story.rename(edited_title)
+                    st.session_state.story_repository.save(story)
+                    st.session_state.story = story
+                    st.session_state.story_file = None
+                    st.success("Title updated.")
+                    st.rerun()
+                except ValueError as error:
+                    st.error(str(error))
 
     genre = st.selectbox(
         "Genre",
@@ -66,16 +89,6 @@ with st.sidebar:
     )
 
     st.divider()
-    st.header("PDF Settings")
-
-    include_cover_image = st.checkbox(
-        "Include uploaded image on cover page",
-        value=st.session_state.include_cover_image,
-    )
-
-    st.session_state.include_cover_image = include_cover_image
-
-    st.divider()
 
     if st.button("Start New Story", use_container_width=True):
         st.session_state.story = None
@@ -83,6 +96,32 @@ with st.sidebar:
         st.session_state.story_file = None
         st.session_state.uploaded_image_bytes = None
         st.rerun()
+
+    st.divider()
+
+    st.header("PDF Settings")
+
+    include_cover_image = st.checkbox(
+        "Include uploaded image on cover page",
+        value=st.session_state.include_cover_image,
+    )
+    st.session_state.include_cover_image = include_cover_image
+
+    st.divider()
+    st.header("Story Status")
+
+    story = st.session_state.story
+
+    if story is None:
+        st.caption("No story started yet.")
+    else:
+        st.caption(f"Title: {story.title}")
+        st.caption(f"Progress: {len(story.chapters)} / 5 chapters")
+
+        if story.is_complete:
+            st.success("Story complete")
+        else:
+            st.info("Story in progress")
 
     st.divider()
     st.markdown("**Story Format**")
@@ -102,35 +141,42 @@ with left_col:
 
     if uploaded_image:
         st.session_state.uploaded_image_bytes = uploaded_image.getvalue()
+
+    if st.session_state.uploaded_image_bytes:
         st.image(
-            uploaded_image,
+            st.session_state.uploaded_image_bytes,
             caption="Your Story Gate",
             use_container_width=True,
         )
 
-    start_button = st.button(
-        "✨ Open the Gate",
-        type="primary",
-        use_container_width=True,
-        disabled=uploaded_image is None,
-    )
+    start_button = False
+
+    if not st.session_state.story_started:
+        start_button = st.button(
+            "✨ Open the Gate",
+            type="primary",
+            use_container_width=True,
+            disabled=st.session_state.uploaded_image_bytes is None,
+        )
+    else:
+        st.success("A story is already in progress.")
 
 
 story_service = get_story_service()
 
-if start_button and uploaded_image:
-    image_bytes = uploaded_image.getvalue()
-
+if start_button and st.session_state.uploaded_image_bytes:
     try:
         with st.spinner("Listening to the echo..."):
             st.session_state.story = story_service.start_story(
-                image_bytes=image_bytes,
+                image_bytes=st.session_state.uploaded_image_bytes,
                 genre=genre,
                 tone=tone,
                 protagonist_role=protagonist_role,
                 story_title=story_title,
             )
             st.session_state.story_started = True
+
+        st.rerun()
 
     except Exception as error:
         st.error(f"Failed to open the gate: {error}")
@@ -150,6 +196,20 @@ with right_col:
     if story:
         st.success("The gate has opened...")
         st.markdown(f"# {story.title}")
+
+        with st.container(border=True):
+            st.markdown("### 📖 Story Overview")
+
+            st.markdown(f"**Genre:** {story.genre}")
+            st.markdown(f"**Tone:** {story.tone}")
+            st.markdown(f"**Protagonist Role:** {story.protagonist_role}")
+
+            st.markdown("**Premise:**")
+            st.write(story.image_analysis.story_seed)
+
+            if story.image_analysis.possible_conflict:
+                st.markdown("**Central Conflict:**")
+                st.write(story.image_analysis.possible_conflict)
 
         progress = len(story.chapters) / 5
         st.progress(progress)
@@ -193,13 +253,8 @@ with right_col:
                 label_visibility="collapsed",
             )
 
-            if st.button(
-                "Continue the Story",
-                use_container_width=True,
-            ):
+            if st.button("Continue the Story", use_container_width=True):
                 selected_choice_id = choice_options[selected_choice_text]
-
-                # Clear previously generated PDF
                 st.session_state.story_file = None
 
                 try:

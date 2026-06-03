@@ -106,3 +106,18 @@ def test_add_chapter_raises_error_after_five_chapters() -> None:
 
     with pytest.raises(ValueError, match="Story cannot have more than 5 chapters."):
         story.add_chapter(create_chapter(6))
+
+
+def test_rename_story() -> None:
+    story = create_story()
+
+    story.rename("The Whispering Gate")
+
+    assert story.title == "The Whispering Gate"
+
+
+def test_rename_story_raises_error_for_empty_title() -> None:
+    story = create_story()
+
+    with pytest.raises(ValueError, match="Story title cannot be empty."):
+        story.rename("   ")

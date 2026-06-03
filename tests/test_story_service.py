@@ -16,8 +16,10 @@ def test_start_story_creates_first_chapter() -> None:
         genre="Fantasy",
         tone="Mysterious",
         protagonist_role="Explorer",
+        story_title="The Gate Beneath the Moon",
     )
 
+    assert story.title == "The Gate Beneath the Moon"
     assert story.id
     assert story.genre == "Fantasy"
     assert story.tone == "Mysterious"

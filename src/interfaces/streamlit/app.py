@@ -21,6 +21,11 @@ st.caption("Every image echoes a story.")
 with st.sidebar:
     st.header("Story Settings")
 
+    story_title = st.text_input(
+        "Story Title (Optional)",
+        placeholder="Leave empty to let AI decide later",
+    )
+
     genre = st.selectbox(
         "Genre",
         options=[
@@ -123,6 +128,7 @@ if start_button and uploaded_image:
                 genre=genre,
                 tone=tone,
                 protagonist_role=protagonist_role,
+                story_title=story_title,
             )
             st.session_state.story_started = True
 
@@ -143,6 +149,7 @@ with right_col:
 
     if story:
         st.success("The gate has opened...")
+        st.markdown(f"# {story.title}")
 
         progress = len(story.chapters) / 5
         st.progress(progress)

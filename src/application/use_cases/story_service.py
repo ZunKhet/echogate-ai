@@ -21,12 +21,17 @@ class StoryService:
         genre: str,
         tone: str,
         protagonist_role: str,
+        story_title: str | None = None,
     ) -> Story:
         image_analysis = self.ai_story_port.analyze_image(image_bytes)
 
         story = Story(
             id=str(uuid4()),
-            title="Untitled Echo",
+            title=(
+                story_title.strip()
+                if story_title and story_title.strip()
+                else image_analysis.suggested_title
+            ),
             genre=genre,
             tone=tone,
             protagonist_role=protagonist_role,

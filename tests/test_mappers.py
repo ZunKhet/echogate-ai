@@ -27,6 +27,7 @@ def test_image_analysis_mapper() -> None:
         story_seed="A forgotten gate awakens.",
         magical_elements=["portal"],
         possible_conflict="Lose a memory.",
+        suggested_title="The Whispering Gate",
     )
 
     result = ImageAnalysisMapper.to_domain(dto)
@@ -72,6 +73,7 @@ def test_story_finalization_mapper() -> None:
             story_seed="A forgotten gate awakens.",
             magical_elements=["portal"],
             possible_conflict="A memory must be sacrificed.",
+            suggested_title="The Whispering Gate",
         ),
     )
 

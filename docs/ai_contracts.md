@@ -26,7 +26,7 @@ Used after the user uploads an image.
   "main_objects": ["gate", "forest", "mist", "moonlight"],
   "story_seed": "A forgotten gate awakens when the moonlight touches its runes.",
   "magical_elements": ["ancient runes", "hidden portal", "whispering mist"],
-  "possible_conflict": "The gate opens only for someone who is willing to lose a memory."
+  "possible_conflict": "The gate opens only for someone who is willing to lose a memory.","suggested_title": "The Whispering Gate"
 }
 ```
 
@@ -38,6 +38,15 @@ Used after the user uploads an image.
 - `story_seed` should be one strong story idea.
 - `magical_elements` should contain fantasy or mysterious elements inspired by the image.
 - `possible_conflict` should suggest the main tension of the story.
+- `suggested_title` should be a short, memorable book title (3–8 words preferred).
+
+### Title Priority
+
+1. User-entered title (highest priority)
+2. AI `suggested_title`
+3. Fallback title ("Untitled Echo")
+
+The application uses the first available title.
 
 ---
 

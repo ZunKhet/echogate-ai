@@ -14,7 +14,8 @@ def test_parse_ai_json() -> None:
       "main_objects": ["gate"],
       "story_seed": "A gate awakens.",
       "magical_elements": ["portal"],
-      "possible_conflict": "A memory must be sacrificed."
+      "possible_conflict": "A memory must be sacrificed.",
+      "suggested_title": "The Whispering Gate"
     }
     """
 

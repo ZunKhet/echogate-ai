@@ -11,7 +11,8 @@ Return ONLY valid JSON with this schema:
   "main_objects": ["important visible objects"],
   "story_seed": "one strong fantasy story seed inspired by the image",
   "magical_elements": ["possible magical or mysterious elements"],
-  "possible_conflict": "the central conflict suggested by the image"
+  "possible_conflict": "the central conflict suggested by the image",
+  "suggested_title": "short memorable story title inspired by the image"
 }
 """
 

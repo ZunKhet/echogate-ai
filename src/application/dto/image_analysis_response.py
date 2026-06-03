@@ -8,3 +8,4 @@ class ImageAnalysisResponse(BaseModel):
     story_seed: str
     magical_elements: list[str]
     possible_conflict: str
+    suggested_title: str

@@ -20,6 +20,7 @@ def create_story() -> Story:
             story_seed="A forgotten gate awakens.",
             magical_elements=["portal"],
             possible_conflict="A memory must be sacrificed.",
+            suggested_title="The Whispering Gate",
         ),
     )
 

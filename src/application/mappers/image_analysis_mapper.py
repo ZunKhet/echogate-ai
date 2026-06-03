@@ -16,4 +16,5 @@ class ImageAnalysisMapper:
             story_seed=dto.story_seed,
             magical_elements=dto.magical_elements,
             possible_conflict=dto.possible_conflict,
+            suggested_title=dto.suggested_title,
         )

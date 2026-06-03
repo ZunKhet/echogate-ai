@@ -61,6 +61,16 @@ with st.sidebar:
     )
 
     st.divider()
+    st.header("PDF Settings")
+
+    include_cover_image = st.checkbox(
+        "Include uploaded image on cover page",
+        value=st.session_state.include_cover_image,
+    )
+
+    st.session_state.include_cover_image = include_cover_image
+
+    st.divider()
     st.markdown("**Story Format**")
     st.caption("Interactive 5-chapter adventure")
 
@@ -77,6 +87,7 @@ with left_col:
     )
 
     if uploaded_image:
+        st.session_state.uploaded_image_bytes = uploaded_image.getvalue()
         st.image(
             uploaded_image,
             caption="Your Story Gate",
@@ -167,7 +178,11 @@ with right_col:
             export_use_case = get_export_story_use_case()
 
             if st.button("Prepare PDF", use_container_width=True):
-                st.session_state.story_file = export_use_case.execute(story.id)
+                st.session_state.story_file = export_use_case.execute(
+                    story_id=story.id,
+                    cover_image_bytes=st.session_state.uploaded_image_bytes,
+                    include_cover_image=st.session_state.include_cover_image,
+                )
 
             if st.session_state.story_file:
                 st.download_button(

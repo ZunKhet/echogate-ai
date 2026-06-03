@@ -1,3 +1,7 @@
+
+import tempfile
+from pathlib import Path
+
 from fpdf import FPDF
 
 from src.application.ports.document_export_port import DocumentExportPort
@@ -5,7 +9,12 @@ from src.domain.entities.story import Story
 
 
 class PDFExportAdapter(DocumentExportPort):
-    def export_story(self, story: Story) -> bytes:
+    def export_story(
+        self,
+        story: Story,
+        cover_image_bytes: bytes | None = None,
+        include_cover_image: bool = True,
+    ) -> bytes:
         pdf = FPDF()
         pdf.set_auto_page_break(auto=True, margin=15)
 
@@ -17,6 +26,12 @@ class PDFExportAdapter(DocumentExportPort):
         pdf.cell(0, 10, f"{story.tone} {story.genre}", ln=True, align="C")
         pdf.cell(
             0, 10, f"Protagonist: {story.protagonist_role}", ln=True, align="C")
+
+        if include_cover_image and cover_image_bytes:
+            self._add_cover_image(pdf, cover_image_bytes)
+            pdf.ln(100)
+        else:
+            pdf.ln(20)
 
         pdf.ln(10)
 
@@ -56,3 +71,26 @@ class PDFExportAdapter(DocumentExportPort):
             return pdf_bytes.encode("latin-1")
 
         return bytes(pdf_bytes)
+
+    def _add_cover_image(
+        self,
+        pdf: FPDF,
+        cover_image_bytes: bytes,
+    ) -> None:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_file:
+            temp_file.write(cover_image_bytes)
+            temp_image_path = Path(temp_file.name)
+
+        try:
+            page_width = pdf.w
+            image_width = 120
+            x_position = (page_width - image_width) / 2
+
+            pdf.image(
+                str(temp_image_path),
+                x=x_position,
+                y=60,
+                w=image_width,
+            )
+        finally:
+            temp_image_path.unlink(missing_ok=True)

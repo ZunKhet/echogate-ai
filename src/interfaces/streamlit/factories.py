@@ -24,6 +24,12 @@ def initialize_session_state() -> None:
     if "story_file" not in st.session_state:
         st.session_state.story_file = None
 
+    if "uploaded_image_bytes" not in st.session_state:
+        st.session_state.uploaded_image_bytes = None
+
+    if "include_cover_image" not in st.session_state:
+        st.session_state.include_cover_image = True
+
 
 def get_story_service() -> StoryService:
     return StoryService(

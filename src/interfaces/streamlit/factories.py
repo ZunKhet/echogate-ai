@@ -52,6 +52,9 @@ def get_ai_story_adapter():
     if settings.AI_PROVIDER == "gemini":
         if not settings.GEMINI_API_KEY:
             raise ValueError("GEMINI_API_KEY is missing.")
-        return GeminiStoryAdapter(api_key=settings.GEMINI_API_KEY)
+
+        return GeminiStoryAdapter(
+            api_key=settings.GEMINI_API_KEY,
+        )
 
     raise ValueError(f"Unsupported AI provider: {settings.AI_PROVIDER}")

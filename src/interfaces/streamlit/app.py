@@ -144,11 +144,34 @@ with right_col:
     if story:
         st.success("The gate has opened...")
 
-        latest_chapter = story.get_latest_chapter()
+        progress = len(story.chapters) / 5
+        st.progress(progress)
+        st.caption(f"Chapter {len(story.chapters)} of 5")
 
-        st.markdown(
-            f"### Chapter {latest_chapter.number}: {latest_chapter.title}")
-        st.write(latest_chapter.content)
+        st.markdown("## Story So Far")
+
+        for chapter in story.chapters:
+            with st.expander(
+                f"Chapter {chapter.number}: {chapter.title}",
+                expanded=chapter.number == len(story.chapters),
+            ):
+                st.caption(chapter.summary)
+                st.write(chapter.content)
+
+                if chapter.selected_choice_id:
+                    selected_choice = next(
+                        (
+                            choice.text
+                            for choice in chapter.choices
+                            if choice.id == chapter.selected_choice_id
+                        ),
+                        None,
+                    )
+
+                    if selected_choice:
+                        st.markdown(f"**Chosen path:** {selected_choice}")
+
+        latest_chapter = story.get_latest_chapter()
 
         if latest_chapter.choices:
             st.markdown("### Which path will you follow?")

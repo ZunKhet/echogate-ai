@@ -38,6 +38,10 @@ class FakeStoryAdapter(AIStoryPort):
         return Chapter(
             number=chapter_number,
             title=f"Echo {chapter_number}",
+            summary=(
+                f"After making choice {selected_choice_id}, the protagonist discovers "
+                "new mysteries and challenges in the world beyond the gate."
+            ),
             content=(
                 f"The choice marked as {selected_choice_id} changed the path. "
                 "The world beyond the gate shifted, revealing a deeper mystery..."
@@ -46,10 +50,7 @@ class FakeStoryAdapter(AIStoryPort):
                 Choice(id="1", text="Trust the hidden voice"),
                 Choice(id="2", text="Search for the lost map"),
                 Choice(id="3", text="Enter the silver tower"),
-            ],
-            summary=(
-                f"After making choice {selected_choice_id}, the protagonist discovers new mysteries and challenges in the world beyond the gate."
-            )
+            ]
             if chapter_number < 5
             else [],
         )

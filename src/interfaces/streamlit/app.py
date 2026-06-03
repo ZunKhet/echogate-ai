@@ -4,6 +4,8 @@ from src.application.use_cases.story_service import StoryService
 from src.infrastructure.persistence.in_memory_story_repository import (
     InMemoryStoryRepository,
 )
+from src.application.use_cases.export_story import ExportStoryUseCase
+from src.infrastructure.document.text_export_adapter import TextExportAdapter
 import streamlit as st
 
 
@@ -183,6 +185,21 @@ with right_col:
 
             st.markdown("### Final Ending")
             st.write(story.final_ending)
+
+            export_use_case = ExportStoryUseCase(
+                story_repository=st.session_state.story_repository,
+                document_exporter=TextExportAdapter(),
+            )
+
+            story_file = export_use_case.execute(story.id)
+
+            st.download_button(
+                label="Download Story",
+                data=story_file,
+                file_name="echogate_story.txt",
+                mime="text/plain",
+                use_container_width=True,
+            )
 
 
 st.divider()

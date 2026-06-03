@@ -1,0 +1,9 @@
+from abc import ABC, abstractmethod
+
+from src.domain.entities.story import Story
+
+
+class DocumentExportPort(ABC):
+    @abstractmethod
+    def export_story(self, story: Story) -> bytes:
+        pass

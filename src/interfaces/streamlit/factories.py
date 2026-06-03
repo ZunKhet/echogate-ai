@@ -7,6 +7,8 @@ from src.infrastructure.document.pdf_export_adapter import PDFExportAdapter
 from src.infrastructure.persistence.in_memory_story_repository import (
     InMemoryStoryRepository,
 )
+from src.config.settings import settings
+from src.infrastructure.ai.gemini_story_adapter import GeminiStoryAdapter
 
 
 def initialize_session_state() -> None:
@@ -25,7 +27,7 @@ def initialize_session_state() -> None:
 
 def get_story_service() -> StoryService:
     return StoryService(
-        ai_story_port=FakeStoryAdapter(),
+        ai_story_port=get_ai_story_adapter(),
         story_repository=st.session_state.story_repository,
     )
 
@@ -35,3 +37,15 @@ def get_export_story_use_case() -> ExportStoryUseCase:
         story_repository=st.session_state.story_repository,
         document_exporter=PDFExportAdapter(),
     )
+
+
+def get_ai_story_adapter():
+    if settings.AI_PROVIDER == "fake":
+        return FakeStoryAdapter()
+
+    if settings.AI_PROVIDER == "gemini":
+        if not settings.GEMINI_API_KEY:
+            raise ValueError("GEMINI_API_KEY is missing.")
+        return GeminiStoryAdapter(api_key=settings.GEMINI_API_KEY)
+
+    raise ValueError(f"Unsupported AI provider: {settings.AI_PROVIDER}")

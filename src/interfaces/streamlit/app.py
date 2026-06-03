@@ -71,6 +71,15 @@ with st.sidebar:
     st.session_state.include_cover_image = include_cover_image
 
     st.divider()
+
+    if st.button("Start New Story", use_container_width=True):
+        st.session_state.story = None
+        st.session_state.story_started = False
+        st.session_state.story_file = None
+        st.session_state.uploaded_image_bytes = None
+        st.rerun()
+
+    st.divider()
     st.markdown("**Story Format**")
     st.caption("Interactive 5-chapter adventure")
 
@@ -159,6 +168,9 @@ with right_col:
                 use_container_width=True,
             ):
                 selected_choice_id = choice_options[selected_choice_text]
+
+                # Clear previously generated PDF
+                st.session_state.story_file = None
 
                 try:
                     with st.spinner("The story continues..."):

@@ -34,7 +34,7 @@ class StoryService:
         )
 
         first_chapter = self.ai_story_port.generate_first_chapter(story)
-        story.chapters.append(first_chapter)
+        story.add_chapter(first_chapter)
 
         self.story_repository.save(story)
         return story
@@ -52,17 +52,16 @@ class StoryService:
         if story.is_complete:
             return story
 
-        current_chapter = story.chapters[-1]
-        current_chapter.selected_choice_id = selected_choice_id
+        story.select_choice_for_latest_chapter(selected_choice_id)
 
-        if len(story.chapters) < MAX_CHAPTERS:
+        if story.can_continue():
             next_chapter = self.ai_story_port.generate_next_chapter(
                 story=story,
                 selected_choice_id=selected_choice_id,
             )
-            story.chapters.append(next_chapter)
+            story.add_chapter(next_chapter)
 
-        if len(story.chapters) == MAX_CHAPTERS:
+        if story.should_finalize():
             story = self.ai_story_port.finalize_story(story)
 
         self.story_repository.save(story)

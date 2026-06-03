@@ -8,5 +8,6 @@ class ChoiceResponse(BaseModel):
 
 class ChapterResponse(BaseModel):
     title: str
+    summary: str
     content: str
     choices: list[ChoiceResponse]

@@ -7,6 +7,7 @@ from src.domain.entities.choice import Choice
 class Chapter:
     number: int
     title: str
+    summary: str
     content: str
     choices: list[Choice]
     selected_choice_id: str | None = None

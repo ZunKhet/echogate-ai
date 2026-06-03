@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 
+from src.domain.constants import MAX_CHAPTERS
 from src.domain.entities.chapter import Chapter
 from src.domain.entities.image_analysis import ImageAnalysis
 
@@ -17,3 +18,25 @@ class Story:
     world_description: str | None = None
     final_ending: str | None = None
     is_complete: bool = False
+
+    def add_chapter(self, chapter: Chapter) -> None:
+        if len(self.chapters) >= MAX_CHAPTERS:
+            raise ValueError("Story cannot have more than 5 chapters.")
+
+        self.chapters.append(chapter)
+
+    def get_latest_chapter(self) -> Chapter:
+        if not self.chapters:
+            raise ValueError("Story has no chapters.")
+
+        return self.chapters[-1]
+
+    def select_choice_for_latest_chapter(self, selected_choice_id: str) -> None:
+        latest_chapter = self.get_latest_chapter()
+        latest_chapter.selected_choice_id = selected_choice_id
+
+    def can_continue(self) -> bool:
+        return not self.is_complete and len(self.chapters) < MAX_CHAPTERS
+
+    def should_finalize(self) -> bool:
+        return not self.is_complete and len(self.chapters) == MAX_CHAPTERS

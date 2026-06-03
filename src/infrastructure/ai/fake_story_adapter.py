@@ -29,6 +29,7 @@ class FakeStoryAdapter(AIStoryPort):
                 Choice(id="2", text="Follow the whispering path"),
                 Choice(id="3", text="Touch the ancient symbol"),
             ],
+            summary="A mysterious gate appears in the misty forest, beckoning the protagonist to explore its secrets.",
         )
 
     def generate_next_chapter(self, story: Story, selected_choice_id: str) -> Chapter:
@@ -45,7 +46,10 @@ class FakeStoryAdapter(AIStoryPort):
                 Choice(id="1", text="Trust the hidden voice"),
                 Choice(id="2", text="Search for the lost map"),
                 Choice(id="3", text="Enter the silver tower"),
-            ]
+            ],
+            summary=(
+                f"After making choice {selected_choice_id}, the protagonist discovers new mysteries and challenges in the world beyond the gate."
+            )
             if chapter_number < 5
             else [],
         )

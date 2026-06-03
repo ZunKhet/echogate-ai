@@ -119,7 +119,7 @@ with right_col:
     if story:
         st.success("The gate has opened...")
 
-        latest_chapter = story.chapters[-1]
+        latest_chapter = story.get_latest_chapter()
 
         st.markdown(
             f"### Chapter {latest_chapter.number}: {latest_chapter.title}")

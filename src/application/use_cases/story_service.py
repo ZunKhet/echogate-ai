@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from src.application.ports.ai_story_port import AIStoryPort
 from src.application.ports.story_repository_port import StoryRepositoryPort
+from src.domain.constants import MAX_CHAPTERS
 from src.domain.entities.story import Story
 
 
@@ -54,14 +55,14 @@ class StoryService:
         current_chapter = story.chapters[-1]
         current_chapter.selected_choice_id = selected_choice_id
 
-        if len(story.chapters) < 5:
+        if len(story.chapters) < MAX_CHAPTERS:
             next_chapter = self.ai_story_port.generate_next_chapter(
                 story=story,
                 selected_choice_id=selected_choice_id,
             )
             story.chapters.append(next_chapter)
 
-        if len(story.chapters) == 5:
+        if len(story.chapters) == MAX_CHAPTERS:
             story = self.ai_story_port.finalize_story(story)
 
         self.story_repository.save(story)

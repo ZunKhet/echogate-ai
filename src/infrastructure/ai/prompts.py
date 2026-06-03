@@ -1,43 +1,85 @@
 IMAGE_ANALYSIS_PROMPT = """
+You are the image interpretation engine for EchoGate.
+
 Analyze the uploaded image as inspiration for an interactive story.
 
-Return structured JSON with:
-- setting
-- mood
-- main_objects
-- story_seed
+Return ONLY valid JSON with this schema:
+
+{
+  "setting": "short description of the visual setting",
+  "mood": "dominant emotional atmosphere",
+  "main_objects": ["important visible objects"],
+  "story_seed": "one strong fantasy story seed inspired by the image",
+  "magical_elements": ["possible magical or mysterious elements"],
+  "possible_conflict": "the central conflict suggested by the image"
+}
 """
 
 FIRST_CHAPTER_PROMPT = """
+You are the story engine for EchoGate.
+
 Create Chapter 1 of a 5-chapter interactive story.
 
 Use:
-- image analysis
-- genre
-- tone
-- protagonist role
+- Image analysis
+- Genre
+- Tone
+- Protagonist role
 
-Return structured JSON with:
-- title
-- content
-- 3 choices
+Return ONLY valid JSON with this schema:
+
+{
+  "title": "chapter title",
+  "content": "chapter content, around 350-500 words",
+  "choices": [
+    {"id": "1", "text": "first choice"},
+    {"id": "2", "text": "second choice"},
+    {"id": "3", "text": "third choice"}
+  ]
+}
 """
 
 NEXT_CHAPTER_PROMPT = """
-Continue the story based on the selected choice.
+You are continuing an EchoGate interactive story.
 
-Return structured JSON with:
-- title
-- content
-- 3 choices if chapter number is less than 5
-- no choices if chapter number is 5
+Continue the story based on:
+- Previous chapters
+- Selected user choice
+- Genre
+- Tone
+- Protagonist role
+
+Return ONLY valid JSON with this schema:
+
+{
+  "title": "chapter title",
+  "content": "chapter content, around 350-500 words",
+  "choices": [
+    {"id": "1", "text": "first choice"},
+    {"id": "2", "text": "second choice"},
+    {"id": "3", "text": "third choice"}
+  ]
+}
+
+If this is Chapter 5, return:
+
+{
+  "title": "chapter title",
+  "content": "final chapter content, around 350-500 words",
+  "choices": []
+}
 """
 
 FINALIZATION_PROMPT = """
-Generate the final story package.
+You are the final story formatter for EchoGate.
 
-Return structured JSON with:
-- character_profile
-- world_description
-- final_ending
+Based on the completed 5-chapter story, generate the final story package.
+
+Return ONLY valid JSON with this schema:
+
+{
+  "character_profile": "main character profile",
+  "world_description": "description of the story world",
+  "final_ending": "short final ending reflection"
+}
 """

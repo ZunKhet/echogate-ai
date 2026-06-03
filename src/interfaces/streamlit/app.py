@@ -107,13 +107,18 @@ story_service = get_story_service()
 if start_button and uploaded_image:
     image_bytes = uploaded_image.getvalue()
 
-    st.session_state.story = story_service.start_story(
-        image_bytes=image_bytes,
-        genre=genre,
-        tone=tone,
-        protagonist_role=protagonist_role,
-    )
-    st.session_state.story_started = True
+    try:
+        with st.spinner("Listening to the echo..."):
+            st.session_state.story = story_service.start_story(
+                image_bytes=image_bytes,
+                genre=genre,
+                tone=tone,
+                protagonist_role=protagonist_role,
+            )
+            st.session_state.story_started = True
+
+    except Exception as error:
+        st.error(f"Failed to open the gate: {error}")
 
 
 with right_col:
@@ -155,11 +160,17 @@ with right_col:
             ):
                 selected_choice_id = choice_options[selected_choice_text]
 
-                st.session_state.story = story_service.continue_story(
-                    story_id=story.id,
-                    selected_choice_id=selected_choice_id,
-                )
-                st.rerun()
+                try:
+                    with st.spinner("The story continues..."):
+                        st.session_state.story = story_service.continue_story(
+                            story_id=story.id,
+                            selected_choice_id=selected_choice_id,
+                        )
+
+                    st.rerun()
+
+                except Exception as error:
+                    st.error(f"Failed to continue the story: {error}")
 
         if story.is_complete:
             st.divider()
@@ -178,11 +189,16 @@ with right_col:
             export_use_case = get_export_story_use_case()
 
             if st.button("Prepare PDF", use_container_width=True):
-                st.session_state.story_file = export_use_case.execute(
-                    story_id=story.id,
-                    cover_image_bytes=st.session_state.uploaded_image_bytes,
-                    include_cover_image=st.session_state.include_cover_image,
-                )
+                try:
+                    with st.spinner("Preparing your storybook..."):
+                        st.session_state.story_file = export_use_case.execute(
+                            story_id=story.id,
+                            cover_image_bytes=st.session_state.uploaded_image_bytes,
+                            include_cover_image=st.session_state.include_cover_image,
+                        )
+
+                except Exception as error:
+                    st.error(f"Failed to prepare PDF: {error}")
 
             if st.session_state.story_file:
                 st.download_button(

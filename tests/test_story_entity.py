@@ -92,7 +92,7 @@ def test_cannot_continue_when_complete() -> None:
 def test_should_finalize_when_story_has_five_chapters() -> None:
     story = create_story()
 
-    for chapter_number in range(1, 6):
+    for chapter_number in range(1, 4):
         story.add_chapter(create_chapter(chapter_number))
 
     assert story.should_finalize() is True
@@ -101,11 +101,11 @@ def test_should_finalize_when_story_has_five_chapters() -> None:
 def test_add_chapter_raises_error_after_five_chapters() -> None:
     story = create_story()
 
-    for chapter_number in range(1, 6):
+    for chapter_number in range(1, 4):
         story.add_chapter(create_chapter(chapter_number))
 
-    with pytest.raises(ValueError, match="Story cannot have more than 5 chapters."):
-        story.add_chapter(create_chapter(6))
+    with pytest.raises(ValueError, match="Story cannot have more than 3 chapters."):
+        story.add_chapter(create_chapter(4))
 
 
 def test_rename_story() -> None:

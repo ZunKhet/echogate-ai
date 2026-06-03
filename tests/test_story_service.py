@@ -44,13 +44,13 @@ def test_continue_story_until_complete() -> None:
         protagonist_role="Explorer",
     )
 
-    for _ in range(4):
+    for _ in range(2):
         story = story_service.continue_story(
             story_id=story.id,
             selected_choice_id="1",
         )
 
-    assert len(story.chapters) == 5
+    assert len(story.chapters) == 3
     assert story.is_complete is True
     assert story.character_profile is not None
     assert story.world_description is not None

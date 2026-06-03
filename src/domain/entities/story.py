@@ -21,7 +21,8 @@ class Story:
 
     def add_chapter(self, chapter: Chapter) -> None:
         if len(self.chapters) >= MAX_CHAPTERS:
-            raise ValueError("Story cannot have more than 5 chapters.")
+            raise ValueError(
+                f"Story cannot have more than {MAX_CHAPTERS} chapters.")
 
         self.chapters.append(chapter)
 

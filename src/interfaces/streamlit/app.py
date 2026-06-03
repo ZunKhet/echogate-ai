@@ -1,11 +1,8 @@
-
-from src.infrastructure.ai.fake_story_adapter import FakeStoryAdapter
-from src.application.use_cases.story_service import StoryService
-from src.infrastructure.persistence.in_memory_story_repository import (
-    InMemoryStoryRepository,
+from src.interfaces.streamlit.factories import (
+    get_export_story_use_case,
+    get_story_service,
+    initialize_session_state,
 )
-from src.application.use_cases.export_story import ExportStoryUseCase
-from src.infrastructure.document.text_export_adapter import TextExportAdapter
 import streamlit as st
 
 
@@ -14,26 +11,6 @@ st.set_page_config(
     page_icon="🌌",
     layout="wide",
 )
-
-
-def initialize_session_state() -> None:
-    if "story" not in st.session_state:
-        st.session_state.story = None
-
-    if "story_repository" not in st.session_state:
-        st.session_state.story_repository = InMemoryStoryRepository()
-
-    if "story_started" not in st.session_state:
-        st.session_state.story_started = False
-
-
-def get_story_service() -> StoryService:
-    ai_adapter = FakeStoryAdapter()
-    return StoryService(
-        ai_story_port=ai_adapter,
-        story_repository=st.session_state.story_repository,
-    )
-
 
 initialize_session_state()
 
@@ -175,6 +152,7 @@ with right_col:
 
         if story.is_complete:
             st.divider()
+
             st.markdown("## The Echo Falls Silent")
 
             st.markdown("### Character Profile")
@@ -186,20 +164,19 @@ with right_col:
             st.markdown("### Final Ending")
             st.write(story.final_ending)
 
-            export_use_case = ExportStoryUseCase(
-                story_repository=st.session_state.story_repository,
-                document_exporter=TextExportAdapter(),
-            )
+            export_use_case = get_export_story_use_case()
 
-            story_file = export_use_case.execute(story.id)
+            if st.button("Prepare PDF", use_container_width=True):
+                st.session_state.story_file = export_use_case.execute(story.id)
 
-            st.download_button(
-                label="Download Story",
-                data=story_file,
-                file_name="echogate_story.txt",
-                mime="text/plain",
-                use_container_width=True,
-            )
+            if st.session_state.story_file:
+                st.download_button(
+                    label="Download Story PDF",
+                    data=st.session_state.story_file,
+                    file_name="echogate_story.pdf",
+                    mime="application/octet-stream",
+                    use_container_width=True,
+                )
 
 
 st.divider()

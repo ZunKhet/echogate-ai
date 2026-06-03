@@ -1,6 +1,9 @@
 
 from src.infrastructure.ai.fake_story_adapter import FakeStoryAdapter
 from src.application.use_cases.story_service import StoryService
+from src.infrastructure.persistence.in_memory_story_repository import (
+    InMemoryStoryRepository,
+)
 import streamlit as st
 
 
@@ -15,13 +18,19 @@ def initialize_session_state() -> None:
     if "story" not in st.session_state:
         st.session_state.story = None
 
+    if "story_repository" not in st.session_state:
+        st.session_state.story_repository = InMemoryStoryRepository()
+
     if "story_started" not in st.session_state:
         st.session_state.story_started = False
 
 
 def get_story_service() -> StoryService:
     ai_adapter = FakeStoryAdapter()
-    return StoryService(ai_story_port=ai_adapter)
+    return StoryService(
+        ai_story_port=ai_adapter,
+        story_repository=st.session_state.story_repository,
+    )
 
 
 initialize_session_state()
@@ -157,10 +166,9 @@ with right_col:
                 selected_choice_id = choice_options[selected_choice_text]
 
                 st.session_state.story = story_service.continue_story(
-                    story=story,
+                    story_id=story.id,
                     selected_choice_id=selected_choice_id,
                 )
-
                 st.rerun()
 
         if story.is_complete:

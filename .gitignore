@@ -8,3 +8,5 @@ outputs/
 
 .DS_Store
 .vscode/
+temp.py
+temp/

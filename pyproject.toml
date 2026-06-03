@@ -1,5 +1,14 @@
-[tool.ruff]
-line-length = 88
+[project]
+name = "echogate-ai"
+version = "0.1.0"
+description = "AI-powered interactive storytelling from images"
+readme = "README.md"
+requires-python = ">=3.11"
 
-[tool.ruff.lint]
-select = ["E", "F", "I"]
+authors = [
+    { name = "Zun Khet Wai" }
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

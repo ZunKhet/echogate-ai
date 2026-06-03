@@ -1,12 +1,24 @@
-.venv/
+# Python
 __pycache__/
 *.pyc
 
-.env
-outputs/
-.streamlit/secrets.toml
+# Virtual Environment
+.venv/
+venv/
 
-.DS_Store
+# Environment Variables
+.env
+
+# IDE
 .vscode/
+
+# Temporary
 temp.py
 temp/
+
+# Test Artifacts
+.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db

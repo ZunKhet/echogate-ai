@@ -4,6 +4,19 @@ EchoGate is an AI-powered interactive storytelling application that transforms a
 
 The application analyzes an image, extracts storytelling elements such as mood, setting, and visual objects, and generates an interactive story that evolves through user choices. The final story can be exported as a PDF book with an optional cover image.
 
+> **Note**
+>
+> The public Streamlit deployment runs in **Fake Mode** using the `FakeStoryAdapter` to ensure reliability and avoid API quota limitations.
+>
+> The codebase also includes a fully implemented `GeminiStoryAdapter` for real AI-powered image analysis and story generation.
+>
+> To enable Gemini locally:
+>
+> ```env
+> AI_PROVIDER=gemini
+> GEMINI_API_KEY=YOUR_API_KEY
+> ```
+
 ## Features
 
 * Upload an image as story inspiration

@@ -49,7 +49,9 @@ initialize_session_state()
 st.title(f"{APP_ICON} {APP_NAME}")
 st.caption(APP_TAGLINE)
 st.write("")
-
+st.info(
+    "📱 Mobile user? Tap the >> button in the top-left corner to access Story Engine settings."
+)
 with st.sidebar:
     st.header("Story Settings")
 

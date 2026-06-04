@@ -139,3 +139,7 @@ The fake provider allows the entire application workflow to be tested without co
 * Story history persistence
 * Public deployment
 * Multi-language support
+
+## License
+
+This project is licensed under the MIT License.

@@ -30,7 +30,7 @@ initialize_session_state()
 
 st.title(f"{APP_ICON} {APP_NAME}")
 st.caption(APP_TAGLINE)
-
+st.write("")
 
 with st.sidebar:
     st.header("Story Settings")

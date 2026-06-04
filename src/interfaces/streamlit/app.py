@@ -310,10 +310,10 @@ if st.session_state.story:
     st.caption(
         f"Selected style: {story.tone} {story.genre} • "
         f"Role: {story.protagonist_role} • "
-        "Format: 5-chapter adventure"
+        f"Format: {MAX_CHAPTERS}-chapter adventure"
     )
 else:
-    st.caption("Format: 5-chapter adventure")
+    st.caption(f"Format: {MAX_CHAPTERS}-chapter adventure")
 
 if settings.DEBUG_MODE and story is not None:
     st.divider()

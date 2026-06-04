@@ -18,6 +18,27 @@ The application analyzes an image, extracts storytelling elements such as mood, 
 * Optional uploaded image on PDF cover page
 * Clean Architecture implementation
 
+## Screenshots
+
+### Upload Image
+
+![Upload Image](screenshots/1_upload.png)
+
+### The Gate's Vision
+
+![Gate Vision](screenshots/2_gatevision.png)
+
+### Interactive Story
+
+![Story Generation](screenshots/3_chapters.png)
+
+### Final Story
+
+![Ending](screenshots/4_storyfinished.png)
+
+### Downloaded PDF
+![PDF](screenshots/5_pdf.png)
+
 ## Technology Stack
 
 ### Frontend

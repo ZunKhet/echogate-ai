@@ -20,6 +20,24 @@ from src.config.app_config import (
 )
 
 
+def show_story_error(error: Exception, action: str) -> None:
+    error_text = str(error)
+
+    if "API_KEY_INVALID" in error_text or "API key not valid" in error_text:
+        st.error(
+            "The Gemini API key is not valid. Please check your key or create a new one from Google AI Studio."
+        )
+        return
+
+    if "quota" in error_text.lower() or "429" in error_text:
+        st.error(
+            "Gemini quota limit reached. Please try again later or use Demo Mode."
+        )
+        return
+
+    st.error(f"{action}: Something went wrong. Please try again.")
+
+
 st.set_page_config(
     page_title=APP_NAME,
     page_icon=APP_ICON,
@@ -37,7 +55,35 @@ with st.sidebar:
 
     story = st.session_state.story
     story_title = ""
+    st.subheader("⚙️ Story Engine")
 
+    story_mode = st.radio(
+        "Choose generation mode",
+        ["Demo Mode", "Gemini AI Mode"],
+        key="story_mode",
+    )
+
+    gemini_api_key = None
+
+    if story_mode == "Gemini AI Mode":
+        gemini_api_key = st.text_input(
+            "Gemini API Key",
+            type="password",
+            placeholder="Paste your Gemini API key here",
+            key="gemini_api_key",
+        )
+
+        if gemini_api_key:
+            st.success("Ready to generate stories with Gemini.")
+
+        st.caption(
+            "Your API key is used only during this session and is not stored."
+        )
+
+        st.link_button(
+            "How to get a Gemini API key",
+            "https://ai.google.dev/gemini-api/docs/api-key",
+        )
     if story is None:
         story_title = st.text_input(
             "Story Title (Optional)",
@@ -83,6 +129,9 @@ with st.sidebar:
     st.divider()
     st.header("Story Status")
 
+    if st.session_state.active_story_mode:
+        st.caption(f"Engine: {st.session_state.active_story_mode}")
+
     story = st.session_state.story
 
     if story is None:
@@ -102,6 +151,8 @@ with st.sidebar:
             st.session_state.story_started = False
             st.session_state.story_file = None
             st.session_state.uploaded_image_bytes = None
+            st.session_state.active_story_mode = None
+            st.session_state.active_gemini_api_key = ""
             st.rerun()
 
     st.divider()
@@ -117,8 +168,10 @@ with st.sidebar:
     st.markdown("**Story Format**")
     st.caption(f"Interactive {MAX_CHAPTERS}-chapter adventure")
 
-
-story_service = get_story_service()
+can_generate = (
+    story_mode == "Demo Mode"
+    or (story_mode == "Gemini AI Mode" and bool(gemini_api_key))
+)
 
 story = st.session_state.story
 
@@ -134,6 +187,8 @@ if story is None:
     if uploaded_image:
         st.session_state.uploaded_image_bytes = uploaded_image.getvalue()
 
+    image_uploaded = st.session_state.uploaded_image_bytes is not None
+
     if st.session_state.uploaded_image_bytes:
         st.image(
             st.session_state.uploaded_image_bytes,
@@ -145,11 +200,18 @@ if story is None:
         "✨ Open the Gate",
         type="primary",
         use_container_width=True,
-        disabled=st.session_state.uploaded_image_bytes is None,
+        disabled=not image_uploaded or not can_generate,
     )
 
     if start_button and st.session_state.uploaded_image_bytes:
         try:
+            st.session_state.active_story_mode = story_mode
+            st.session_state.active_gemini_api_key = gemini_api_key or ""
+
+            story_service = get_story_service(
+                story_mode=st.session_state.active_story_mode,
+                gemini_api_key=st.session_state.active_gemini_api_key,
+            )
             with st.spinner("Listening to the echo..."):
                 st.session_state.story = story_service.start_story(
                     image_bytes=st.session_state.uploaded_image_bytes,
@@ -163,7 +225,7 @@ if story is None:
             st.rerun()
 
         except Exception as error:
-            st.error(f"Failed to open the gate: {error}")
+            show_story_error(error, "Failed to open the gate")
 
 else:
     image_col, vision_col = st.columns([1, 1.2])
@@ -254,6 +316,10 @@ else:
             st.session_state.story_file = None
 
             try:
+                story_service = get_story_service(
+                    story_mode=st.session_state.active_story_mode,
+                    gemini_api_key=st.session_state.active_gemini_api_key,
+                )
                 with st.spinner("The story continues..."):
                     st.session_state.story = story_service.continue_story(
                         story_id=story.id,
@@ -263,7 +329,7 @@ else:
                 st.rerun()
 
             except Exception as error:
-                st.error(f"Failed to continue the story: {error}")
+                show_story_error(error, "Failed to continue the story")
 
     if story.is_complete:
         st.divider()

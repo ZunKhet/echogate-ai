@@ -4,11 +4,39 @@
 
 EchoGate transforms an uploaded image into an interactive AI-generated adventure story.
 
-The story is generated chapter by chapter based on user choices and can be exported as a PDF book.
+The story evolves through user choices and can be exported as a PDF storybook.
 
 ---
 
-## Step 1: Upload an Image
+## Step 1: Choose a Story Engine
+
+Open the sidebar and select one of the available modes.
+
+### Demo Mode
+
+* No API key required
+* Uses the built-in FakeStoryAdapter
+* Ideal for testing and exploration
+
+### Gemini AI Mode
+
+* Uses your own Gemini API key
+* Generates richer AI-powered stories
+
+To use Gemini AI Mode:
+
+1. Select **Gemini AI Mode**
+2. Enter your Gemini API key
+3. Upload an image
+4. Open the Gate
+
+Get a Gemini API key:
+
+https://ai.google.dev/gemini-api/docs/api-key
+
+---
+
+## Step 2: Upload an Image
 
 Click:
 
@@ -26,62 +54,29 @@ The uploaded image becomes the inspiration for the story.
 
 ---
 
-## Step 2: Configure Story Settings
-
-Optional settings:
+## Step 3: Configure Story Settings
 
 ### Story Title
 
-Leave empty:
+Leave empty to allow EchoGate to generate a title automatically.
 
-```text
-AI generates a title
-```
-
-Or enter your own title.
-
----
+Or provide your own title.
 
 ### Genre
 
-Available genres:
-
-* Fantasy
-* Mystery
-* Sci-fi
-* Adventure
-* Dark Fairytale
-* Cozy Magical
-
----
+Choose the genre of your adventure.
 
 ### Tone
 
-Available tones:
-
-* Mysterious
-* Epic
-* Dreamy
-* Dark
-* Hopeful
-* Emotional
-
----
+Choose the overall storytelling tone.
 
 ### Protagonist Role
 
-Available roles:
-
-* Explorer
-* Wanderer
-* Mage
-* Guardian
-* Dreamer
-* Lost Traveler
+Choose the role of the main character.
 
 ---
 
-## Step 3: Open the Gate
+## Step 4: Open the Gate
 
 Click:
 
@@ -93,12 +88,12 @@ EchoGate will:
 
 1. Analyze the image
 2. Generate story inspiration
-3. Generate a title
+3. Generate a story title
 4. Generate Chapter 1
 
 ---
 
-## Step 4: Explore The Gate's Vision
+## Step 5: Explore The Gate's Vision
 
 The Gate's Vision displays:
 
@@ -108,27 +103,27 @@ Where the story takes place.
 
 ### Mood
 
-Atmosphere of the story.
+The atmosphere of the story.
 
 ### Key Elements
 
-Important objects detected from the image.
+Important objects identified from the image.
 
 ### First Echo
 
-Initial story premise.
+The initial story premise.
 
 ### Hidden Tension
 
-Main conflict that drives the adventure.
+The main conflict driving the adventure.
 
 ---
 
-## Step 5: Continue the Story
+## Step 6: Continue the Story
 
-Read the chapter.
+Read the current chapter.
 
-Select one of the available choices.
+Choose one of the available paths.
 
 Example:
 
@@ -144,11 +139,11 @@ Click:
 Continue the Story
 ```
 
-The selected choice influences the next chapter.
+Your choice influences the next chapter.
 
 ---
 
-## Step 6: Reach the Ending
+## Step 7: Reach the Ending
 
 After the final chapter, EchoGate generates:
 
@@ -162,19 +157,17 @@ Description of the story world.
 
 ### Final Ending
 
-Story conclusion.
+The conclusion of the adventure.
 
 ---
 
-## Step 7: Export PDF
+## Step 8: Export PDF
 
-Enable:
+Optionally enable:
 
 ```text
 Include uploaded image on cover page
 ```
-
-(Optional)
 
 Click:
 
@@ -188,7 +181,7 @@ Then:
 Download Story PDF
 ```
 
-The generated PDF contains:
+The exported PDF includes:
 
 * Cover page
 * Story chapters
@@ -216,41 +209,32 @@ and starts a new adventure.
 
 ---
 
-## Development Mode
+## Story Engine Locking
 
-When using:
+Once a story starts, EchoGate locks the selected Story Engine for the entire adventure.
 
-```env
-AI_PROVIDER=fake
+For example:
+
+```text
+Start with Gemini AI Mode
+        ↓
+Generate Chapter 1
+        ↓
+Continue Story
+        ↓
+Gemini remains active
 ```
 
-EchoGate uses the FakeStoryAdapter.
-
-Benefits:
-
-* No API cost
-* No quota limits
-* Faster testing
-
-This mode is recommended for UI development and testing.
+This ensures a consistent storytelling experience throughout the story.
 
 ---
 
-## Gemini Mode
+## Error Handling
 
-When using:
+### Invalid Gemini API Key
 
-```env
-AI_PROVIDER=gemini
-```
+EchoGate displays a friendly error message if the provided Gemini API key is invalid.
 
-EchoGate generates real AI content.
+### Gemini Quota Limits
 
-Requirements:
-
-* Gemini API key
-* Internet connection
-
-Note:
-
-Free-tier Gemini usage may be subject to quotas and rate limits.
+If Gemini quota limits are reached, EchoGate will notify the user and suggest trying again later or switching to Demo Mode.

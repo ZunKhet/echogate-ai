@@ -27,7 +27,7 @@ cd echogate-ai
 
 ## Create Virtual Environment
 
-Windows:
+### Windows
 
 ```bash
 python -m venv .venv
@@ -37,6 +37,13 @@ Activate:
 
 ```bash
 .venv\Scripts\activate
+```
+
+### macOS / Linux
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
 ```
 
 ---
@@ -57,26 +64,17 @@ Create a file named:
 .env
 ```
 
-### Fake Provider
-
-Recommended for development:
+Example:
 
 ```env
-AI_PROVIDER=fake
 DEBUG_MODE=false
 ```
 
-This mode requires no API key.
+### Note
 
----
+EchoGate no longer requires Gemini API keys in environment variables.
 
-### Gemini Provider
-
-```env
-AI_PROVIDER=gemini
-GEMINI_API_KEY=YOUR_API_KEY
-DEBUG_MODE=false
-```
+Users can provide their own Gemini API key directly from the application sidebar when using Gemini AI Mode.
 
 ---
 
@@ -86,9 +84,9 @@ DEBUG_MODE=false
 python -m streamlit run src/interfaces/streamlit/app.py
 ```
 
-The application should open automatically in the browser.
+The application should open automatically in your browser.
 
-If it does not open automatically:
+If it does not:
 
 ```text
 http://localhost:8501
@@ -98,16 +96,8 @@ http://localhost:8501
 
 ## Run Tests
 
-Execute:
-
 ```bash
 python -m pytest
-```
-
-Expected result:
-
-```text
-All tests passed
 ```
 
 ---
@@ -122,13 +112,25 @@ Run the application from the project root:
 python -m streamlit run src/interfaces/streamlit/app.py
 ```
 
-Do not run:
+---
 
-```bash
-streamlit run src/interfaces/streamlit/app.py
+### Invalid Gemini API Key
+
+If you see:
+
+```text
+The Gemini API key is not valid.
 ```
 
-unless your environment is configured correctly.
+Verify that:
+
+* The key was copied correctly
+* The key is active in Google AI Studio
+* The key has not been deleted or restricted
+
+Get a Gemini API key:
+
+https://ai.google.dev/gemini-api/docs/api-key
 
 ---
 
@@ -143,21 +145,19 @@ Examples:
 
 Solutions:
 
-* Switch to fake provider
 * Wait for quota reset
-* Use a different AI provider
+* Use a different Gemini API key
+* Switch to Demo Mode
 
 ---
 
 ### PDF Generation Issues
 
-Make sure:
+Verify:
 
 ```bash
 pip install fpdf2
 ```
-
-is installed correctly.
 
 ---
 
@@ -166,13 +166,11 @@ is installed correctly.
 Recommended workflow:
 
 ```text
-Develop UI using FakeStoryAdapter
+Develop UI using Demo Mode
         ↓
 Run Tests
         ↓
-Switch to Gemini
-        ↓
-Validate AI Output
+Validate with Gemini AI Mode
         ↓
 Commit Changes
 ```

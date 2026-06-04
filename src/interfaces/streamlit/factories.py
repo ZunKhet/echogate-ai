@@ -7,7 +7,6 @@ from src.infrastructure.document.pdf_export_adapter import PDFExportAdapter
 from src.infrastructure.persistence.in_memory_story_repository import (
     InMemoryStoryRepository,
 )
-from src.config.settings import settings
 from src.infrastructure.ai.gemini_story_adapter import GeminiStoryAdapter
 
 
@@ -30,10 +29,28 @@ def initialize_session_state() -> None:
     if "include_cover_image" not in st.session_state:
         st.session_state.include_cover_image = True
 
+    if "story_mode" not in st.session_state:
+        st.session_state.story_mode = "Demo Mode"
 
-def get_story_service() -> StoryService:
+    if "gemini_api_key" not in st.session_state:
+        st.session_state.gemini_api_key = ""
+
+    if "active_story_mode" not in st.session_state:
+        st.session_state.active_story_mode = None
+
+    if "active_gemini_api_key" not in st.session_state:
+        st.session_state.active_gemini_api_key = ""
+
+
+def get_story_service(
+    story_mode: str = "Demo Mode",
+    gemini_api_key: str | None = None,
+) -> StoryService:
     return StoryService(
-        ai_story_port=get_ai_story_adapter(),
+        ai_story_port=get_ai_story_adapter(
+            story_mode=story_mode,
+            gemini_api_key=gemini_api_key,
+        ),
         story_repository=st.session_state.story_repository,
     )
 
@@ -45,16 +62,19 @@ def get_export_story_use_case() -> ExportStoryUseCase:
     )
 
 
-def get_ai_story_adapter():
-    if settings.AI_PROVIDER == "fake":
+def get_ai_story_adapter(
+    story_mode: str = "Demo Mode",
+    gemini_api_key: str | None = None,
+):
+    if story_mode == "Demo Mode":
         return FakeStoryAdapter()
 
-    if settings.AI_PROVIDER == "gemini":
-        if not settings.GEMINI_API_KEY:
-            raise ValueError("GEMINI_API_KEY is missing.")
+    if story_mode == "Gemini AI Mode":
+        if not gemini_api_key:
+            raise ValueError("Gemini API key is missing.")
 
         return GeminiStoryAdapter(
-            api_key=settings.GEMINI_API_KEY,
+            api_key=gemini_api_key,
         )
 
-    raise ValueError(f"Unsupported AI provider: {settings.AI_PROVIDER}")
+    raise ValueError(f"Unsupported story mode: {story_mode}")

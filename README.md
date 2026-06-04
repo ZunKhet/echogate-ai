@@ -1,56 +1,59 @@
 # EchoGate 🌌
 
-EchoGate is an AI-powered interactive storytelling application that transforms an uploaded image into a branching fantasy adventure.
+EchoGate is an AI-powered interactive storytelling application that transforms an uploaded image into a branching adventure.
 
-The application analyzes an image, extracts storytelling elements such as mood, setting, and visual objects, and generates an interactive story that evolves through user choices. The final story can be exported as a PDF book with an optional cover image.
+Upload an image, choose your story style, and let EchoGate generate an interactive narrative inspired by the visual elements, mood, and atmosphere of the image. The story evolves through user choices and can be exported as a PDF storybook.
 
-> **Note**
->
-> The public Streamlit deployment runs in **Fake Mode** using the `FakeStoryAdapter` to ensure reliability and avoid API quota limitations.
->
-> The codebase also includes a fully implemented `GeminiStoryAdapter` for real AI-powered image analysis and story generation.
->
-> To enable Gemini locally:
->
-> ```env
-> AI_PROVIDER=gemini
-> GEMINI_API_KEY=YOUR_API_KEY
-> ```
+---
 
 ## Features
 
+### Image-to-Story Generation
+
 * Upload an image as story inspiration
-* AI-generated story title
-* AI image analysis ("The Gate's Vision")
-* Interactive branching story choices
-* Three-chapter adventure structure
+* AI-powered image analysis
+* Automatic story title generation
+* Story seed generation based on image content
+
+### Interactive Storytelling
+
+* Branching story choices
+* Multi-chapter adventure structure
 * Character profile generation
 * World description generation
 * Final ending generation
-* PDF export
+
+### Story Engines
+
+#### Demo Mode
+
+* No API key required
+* Uses the built-in `FakeStoryAdapter`
+* Ideal for quickly exploring the application
+
+#### Gemini AI Mode
+
+* Uses the user's own Gemini API key
+* Generates richer AI-powered stories
+* API keys are used only during the current session and are never stored
+
+Get a Gemini API key:
+
+https://ai.google.dev/gemini-api/docs/api-key
+
+### Export
+
+* PDF story export
 * Optional uploaded image on PDF cover page
-* Clean Architecture implementation
 
-## Screenshots
+### Architecture
 
-### Upload Image
+* Clean Architecture
+* Dependency inversion through ports and adapters
+* Domain-driven design principles
+* Testable application layer
 
-![Upload Image](screenshots/1_upload.png)
-
-### The Gate's Vision
-
-![Gate Vision](screenshots/2_gatevision.png)
-
-### Interactive Story
-
-![Story Generation](screenshots/3_chapters.png)
-
-### Final Story
-
-![Ending](screenshots/4_storyfinished.png)
-
-### Downloaded PDF
-![PDF](screenshots/5_pdf.png)
+---
 
 ## Technology Stack
 
@@ -64,8 +67,8 @@ The application analyzes an image, extracts storytelling elements such as mood, 
 
 ### AI
 
-* Gemini API (optional)
-* Fake Story Provider (development mode)
+* Gemini API
+* Fake Story Provider
 
 ### Testing
 
@@ -74,6 +77,8 @@ The application analyzes an image, extracts storytelling elements such as mood, 
 ### Document Generation
 
 * FPDF2
+
+---
 
 ## Architecture
 
@@ -93,19 +98,49 @@ Project structure:
 
 ```text
 src/
-├── domain/
 ├── application/
+├── config/
+├── domain/
 ├── infrastructure/
-├── interfaces/
-└── config/
+└── interfaces/
 ```
+
+### Story Generation Flow
+
+```text
+Image Upload
+      ↓
+Image Analysis
+      ↓
+Story Generation
+      ↓
+User Choice
+      ↓
+Next Chapter
+      ↓
+Story Completion
+      ↓
+PDF Export
+```
+
+### AI Adapter Architecture
+
+```text
+AIStoryPort
+     │
+     ├── FakeStoryAdapter
+     │
+     └── GeminiStoryAdapter
+```
+
+---
 
 ## Running Locally
 
 Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/echogate-ai.git
+git clone https://github.com/ZunKhet/echogate-ai.git
 cd echogate-ai
 ```
 
@@ -117,8 +152,16 @@ python -m venv .venv
 
 Activate:
 
+### Windows
+
 ```bash
 .venv\Scripts\activate
+```
+
+### macOS / Linux
+
+```bash
+source .venv/bin/activate
 ```
 
 Install dependencies:
@@ -127,28 +170,34 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Run:
+Run the application:
 
 ```bash
 python -m streamlit run src/interfaces/streamlit/app.py
 ```
+
+---
 
 ## Configuration
 
 Create a `.env` file:
 
 ```env
-AI_PROVIDER=fake
 DEBUG_MODE=false
 ```
 
-To use Gemini:
+### Using Gemini
 
-```env
-AI_PROVIDER=gemini
-GEMINI_API_KEY=YOUR_API_KEY
-DEBUG_MODE=false
-```
+No Gemini API key is required in `.env`.
+
+Simply:
+
+1. Launch the application
+2. Select **Gemini AI Mode**
+3. Enter your Gemini API key in the sidebar
+4. Start generating stories
+
+---
 
 ## Running Tests
 
@@ -156,23 +205,33 @@ DEBUG_MODE=false
 python -m pytest
 ```
 
+---
+
 ## Development Notes
 
-The project supports two AI providers:
+EchoGate supports multiple story-generation providers through the `AIStoryPort` abstraction.
 
-* FakeStoryAdapter
-* GeminiStoryAdapter
+Current implementations:
 
-The fake provider allows the entire application workflow to be tested without consuming API quota.
+* `FakeStoryAdapter`
+* `GeminiStoryAdapter`
+
+This architecture makes it easy to add additional AI providers in the future without modifying the application layer.
+
+---
 
 ## Future Improvements
 
 * Additional AI providers
 * Story length customization
-* Multiple story genres
-* Story history persistence
-* Public deployment
+* More genres and storytelling styles
+* Story persistence and user library
 * Multi-language support
+* Save and resume stories
+* Audio narration
+* Custom cover page themes
+
+---
 
 ## License
 

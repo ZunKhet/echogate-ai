@@ -6,8 +6,6 @@ load_dotenv()
 
 
 class Settings:
-    GEMINI_API_KEY: str | None = os.getenv("GEMINI_API_KEY")
-    AI_PROVIDER: str = os.getenv("AI_PROVIDER", "fake")
     DEBUG_MODE: bool = os.getenv("DEBUG_MODE", "false").lower() == "true"
 
 

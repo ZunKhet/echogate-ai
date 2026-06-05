@@ -3,8 +3,10 @@ import tempfile
 from pathlib import Path
 
 from fpdf import FPDF
+from streamlit import pdf
 
 from src.application.ports.document_export_port import DocumentExportPort
+from src.domain.entities import story
 from src.domain.entities.story import Story
 
 
@@ -26,7 +28,7 @@ class PDFExportAdapter(DocumentExportPort):
         pdf.ln(10)
 
         pdf.set_font("Helvetica", "B", 26)
-        pdf.multi_cell(0, 12, story.title, align="C")
+        pdf.multi_cell(0, 12, self._clean_pdf_text(story.title), align="C")
 
         pdf.ln(4)
 
@@ -34,7 +36,7 @@ class PDFExportAdapter(DocumentExportPort):
         pdf.cell(
             0,
             10,
-            f"A {story.tone} {story.genre} Adventure",
+            self._clean_pdf_text(f"A {story.tone} {story.genre} Adventure"),
             ln=True,
             align="C",
         )
@@ -42,7 +44,7 @@ class PDFExportAdapter(DocumentExportPort):
         pdf.cell(
             0,
             10,
-            f"Protagonist: {story.protagonist_role}",
+            self._clean_pdf_text(f"Protagonist: {story.protagonist_role}"),
             ln=True,
             align="C",
         )
@@ -64,11 +66,16 @@ class PDFExportAdapter(DocumentExportPort):
             pdf.add_page()
             pdf.set_font("Helvetica", "B", 18)
             pdf.cell(
-                0, 10, f"Chapter {chapter.number}: {chapter.title}", ln=True)
+                0,
+                10,
+                self._clean_pdf_text(
+                    f"Chapter {chapter.number}: {chapter.title}"),
+                ln=True,
+            )
 
             pdf.ln(5)
             pdf.set_font("Helvetica", "", 12)
-            pdf.multi_cell(0, 8, chapter.content)
+            pdf.multi_cell(0, 8, self._clean_pdf_text(chapter.content))
 
         pdf.add_page()
         pdf.set_font("Helvetica", "B", 18)
@@ -76,7 +83,7 @@ class PDFExportAdapter(DocumentExportPort):
 
         pdf.ln(5)
         pdf.set_font("Helvetica", "", 12)
-        pdf.multi_cell(0, 8, story.final_ending or "")
+        pdf.multi_cell(0, 8, self._clean_pdf_text(story.final_ending))
 
         pdf_bytes = pdf.output(dest="S")
 
@@ -111,3 +118,23 @@ class PDFExportAdapter(DocumentExportPort):
 
         finally:
             temp_image_path.unlink(missing_ok=True)
+
+    def _clean_pdf_text(self, text: str | None) -> str:
+        if not text:
+            return ""
+
+        replacements = {
+            "\u2018": "'",   # left single quote
+            "\u2019": "'",   # right single quote
+            "\u201c": '"',   # left double quote
+            "\u201d": '"',   # right double quote
+            "\u2013": "-",   # en dash
+            "\u2014": "-",   # em dash
+            "\u2026": "...",  # ellipsis
+            "\u00a0": " ",   # non-breaking space
+        }
+
+        for old, new in replacements.items():
+            text = text.replace(old, new)
+
+        return text.encode("latin-1", errors="replace").decode("latin-1")
